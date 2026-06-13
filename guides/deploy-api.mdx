@@ -28,6 +28,13 @@ AGENT_SHA256=<sha256-of-binary>
 HIBP_API_KEY=           # optional paid breach source
 REPORT_BRAND_NAME=Beacon
 REPORT_BRAND_TAGLINE=Compliance evidence
+
+# Daily digest email (Resend)
+DASHBOARD_BASE_URL=https://app.yourdomain.com
+DIGEST_FROM_EMAIL=Beacon <notifications@yourdomain.com>
+RESEND_API_KEY=
+SCHEDULER_SECRET=       # required for POST /internal/digest/run
+SCHEDULER_ENABLED=false # optional in-process loop (safe multi-replica)
 ```
 
 <Warning>
@@ -73,6 +80,17 @@ Terminate TLS at nginx and proxy to `127.0.0.1:8000`.
 | `GET /health` | `{"status":"ok"}` |
 
 Use this for load balancer health probes.
+
+## Daily digest scheduler
+
+Configure Resend and `SCHEDULER_SECRET`, then trigger digests via cron:
+
+```bash
+*/5 * * * * curl -sf -X POST https://api.yourdomain.com/internal/digest/run \
+  -H "X-Scheduler-Secret: YOUR_SECRET"
+```
+
+Or set `SCHEDULER_ENABLED=true` for an in-process loop. Tenants configure recipients in the dashboard. See [Daily digest notifications](/guides/daily-digest-notifications).
 
 ## Agent releases
 

@@ -30,6 +30,7 @@ GET /openapi.json
 | Agent routes | Agent JWT (HS256, 5 min) | `Authorization: Bearer <jwt>` |
 | Dashboard routes | Clerk JWT | `Authorization: Bearer <jwt>` |
 | Dev dashboard | Tenant header | `X-Tenant-ID: org_dev` |
+| Internal scheduler | Shared secret | `X-Scheduler-Secret` |
 | Register | Install token in body | — |
 | Installer | None | — |
 
@@ -39,6 +40,7 @@ GET /openapi.json
 |--------|-----|----------|
 | `/api/agent` | agent | Beacon Host |
 | `/api` | dashboard | Beacon Dashboard |
+| `/internal` | internal | Digest scheduler |
 | `/install.sh`, `/releases` | installer | Bootstrap |
 
 ## Response codes
@@ -73,5 +75,8 @@ GET /openapi.json
   </Card>
   <Card title="Alerts" icon="bell" href="/api-reference/dashboard/alerts">
     Security detections and remediation.
+  </Card>
+  <Card title="Notifications" icon="envelope" href="/api-reference/dashboard/notifications">
+    Daily digest settings and scheduler.
   </Card>
 </CardGroup>

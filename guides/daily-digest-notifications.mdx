@@ -1,0 +1,102 @@
+---
+title: Daily digest notifications
+description: Configure daily email summaries of critical alerts and vulnerabilities from the dashboard.
+---
+
+Beacon can email a **once-per-day summary** of open security alerts and vulnerabilities. Each organization configures recipients, schedule, and severity filters from the dashboard — no per-customer API env changes.
+
+## Dashboard setup
+
+**Administration → Notifications** (`/settings/notifications`)
+
+| Setting | Default | Notes |
+|---------|---------|-------|
+| Daily digest | On | Disable to stop scheduled emails |
+| Recipients | Empty | Use **Use my email** to prefill from Clerk |
+| Send at | 08:00 | Hour in the selected timezone |
+| Timezone | UTC | IANA name, e.g. `Europe/Berlin` |
+| Alert severities | critical, high | Which open alerts appear in the email |
+| Vulnerability severities | critical, high | Which open CVEs appear |
+| All clear | On | Send a short email when nothing matches |
+
+Click **Send test digest** to preview content immediately (respects current settings).
+
+<Tip>
+  Most deployments have **one dashboard user per company**. Set that user's email as the sole recipient — they receive the daily rollup and triage in **Log Monitoring** and **Vulnerabilities**.
+</Tip>
+
+## What the email contains
+
+- Open alerts matching your severity filters (with **new in 24h** counts)
+- Open CVEs matching your severity filters
+- Fleet summary: agent count, offline agents, compliance score
+- Link back to the dashboard
+
+This is a **summary nudge**, not real-time paging. Resolve items in the dashboard after reading the email.
+
+## Platform configuration (operators)
+
+Set these on **beacon-api** (not per tenant):
+
+```bash
+DASHBOARD_BASE_URL=https://app.yourdomain.com
+DIGEST_FROM_EMAIL=Beacon <notifications@yourdomain.com>
+RESEND_API_KEY=re_...
+SCHEDULER_SECRET=<long-random-secret>
+```
+
+Without `RESEND_API_KEY`, digests **dry-run** — the API logs what would be sent; useful in local dev.
+
+## Running the scheduler
+
+The scheduler evaluates tenants whose local hour matches `digest_hour` and sends at most **one scheduled digest per tenant per calendar day**.
+
+### Option A — external cron (recommended at scale)
+
+Call the internal endpoint every few minutes:
+
+```bash
+*/5 * * * * curl -sf -X POST https://api.yourdomain.com/internal/digest/run \
+  -H "X-Scheduler-Secret: YOUR_SECRET"
+```
+
+### Option B — in-process loop
+
+```bash
+SCHEDULER_ENABLED=true
+SCHEDULER_SECRET=<same-secret>
+```
+
+Each API replica runs a 60-second loop. Safe on multiple replicas — see idempotency below.
+
+## Idempotency and scaling
+
+Duplicate scheduler calls do **not** duplicate emails:
+
+| Layer | Mechanism |
+|-------|-----------|
+| Scheduler invocation | Unique `run_key` per minute — second call in the same minute is rejected |
+| Tenant delivery | Unique `(tenant_id, digest_date, delivery_kind)` — only one scheduled send per org per local day |
+
+You can run several API instances behind a load balancer and/or overlap cron jobs without double-sending.
+
+## API endpoints
+
+Dashboard routes (Clerk JWT):
+
+- `GET /api/notification-settings`
+- `PUT /api/notification-settings`
+- `POST /api/notification-settings/test`
+
+Internal route (scheduler secret only):
+
+- `POST /internal/digest/run`
+
+See [Notifications API](/api-reference/dashboard/notifications).
+
+## Related
+
+- [Dashboard pages — Notifications](/dashboard/pages)
+- [Deploy API](/guides/deploy-api)
+- [Alerts](/api-reference/dashboard/alerts)
+- [Incidents and remediation](/guides/incidents-and-remediation)

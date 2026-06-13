@@ -41,7 +41,8 @@
               "guides/manage-fleet",
               "guides/agent-groups",
               "guides/export-compliance-report",
-              "guides/incidents-and-remediation"
+              "guides/incidents-and-remediation",
+              "guides/daily-digest-notifications"
             ]
           },
           {
@@ -92,7 +93,8 @@
               "api-reference/dashboard/agents",
               "api-reference/dashboard/compliance",
               "api-reference/dashboard/alerts",
-              "api-reference/dashboard/incidents"
+              "api-reference/dashboard/incidents",
+              "api-reference/dashboard/notifications"
             ]
           }
         ]

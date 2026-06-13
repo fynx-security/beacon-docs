@@ -1,0 +1,106 @@
+---
+title: Notifications
+description: Daily digest email settings and scheduler endpoints.
+---
+
+## Get notification settings
+
+```
+GET /api/notification-settings
+```
+
+Requires Clerk session JWT (or `X-Tenant-ID` in dev).
+
+```json
+{
+  "digest_enabled": true,
+  "recipient_emails": ["admin@company.com"],
+  "digest_hour": 8,
+  "timezone": "Europe/Berlin",
+  "alert_severities": ["critical", "high"],
+  "vuln_severities": ["critical", "high"],
+  "include_alerts": true,
+  "include_vulnerabilities": true,
+  "send_when_empty": true,
+  "updated_at": "2026-06-13T10:00:00Z"
+}
+```
+
+## Update notification settings
+
+```
+PUT /api/notification-settings
+```
+
+Partial updates supported. All fields optional.
+
+```json
+{
+  "digest_enabled": true,
+  "recipient_emails": ["admin@company.com"],
+  "digest_hour": 8,
+  "timezone": "UTC",
+  "alert_severities": ["critical", "high"],
+  "vuln_severities": ["critical", "high"],
+  "include_alerts": true,
+  "include_vulnerabilities": true,
+  "send_when_empty": true
+}
+```
+
+Returns the updated settings object (same shape as GET).
+
+## Send test digest
+
+```
+POST /api/notification-settings/test
+```
+
+Sends immediately using current tenant settings (does not consume the daily scheduled slot).
+
+```json
+{
+  "sent": true,
+  "dry_run": false,
+  "message": "sent to admin@company.com"
+}
+```
+
+When email is not configured on the API, `dry_run` is `true` and the digest is logged instead of sent.
+
+## Run scheduled digests (internal)
+
+```
+POST /internal/digest/run
+```
+
+**Auth:** `X-Scheduler-Secret` header must match API `SCHEDULER_SECRET`.
+
+Processes all tenants with `digest_enabled` whose local time matches `digest_hour`. Idempotent per minute and per tenant/day.
+
+```json
+{
+  "accepted": true,
+  "run_key": "2026-06-13T08:05",
+  "already_running": false,
+  "tenants_processed": 3,
+  "tenants_sent": 2,
+  "tenants_skipped": 1,
+  "tenants_failed": 0
+}
+```
+
+If the same minute is triggered twice:
+
+```json
+{
+  "accepted": false,
+  "run_key": "2026-06-13T08:05",
+  "already_running": true
+}
+```
+
+## Related
+
+- [Daily digest guide](/guides/daily-digest-notifications)
+- [Alerts](/api-reference/dashboard/alerts)
