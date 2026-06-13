@@ -1,0 +1,87 @@
+---
+title: Evidence and audits
+description: JSON audit packs and PDF compliance reports for internal review and auditor handoff.
+---
+
+Beacon's core deliverable for compliance workflows is **exportable evidence** — a point-in-time snapshot of posture, findings, and scores.
+
+## Export formats
+
+| Format | Endpoint | Best for |
+|--------|----------|----------|
+| **JSON audit pack** | `GET /api/compliance/evidence` | Integrations, archival, custom reporting |
+| **PDF report** | `GET /api/compliance/evidence/report` | Executives, auditors, board packs |
+
+Both are available from **Compliance** in the dashboard or directly via API.
+
+## JSON audit pack structure
+
+```json
+{
+  "framework_id": "nis2",
+  "generated_at": "2026-06-13T12:00:00+00:00",
+  "tenant_id": "org_...",
+  "compliance": { "overall_score": 72, "controls": [...] },
+  "agents": [...],
+  "open_vulnerabilities": [...],
+  "open_alerts": [...],
+  "monitored_emails": [...],
+  "cis_snapshots": [...],
+  "summary": {
+    "agent_count": 12,
+    "open_cve_count": 34,
+    "open_alert_count": 5,
+    "monitored_email_count": 8,
+    "overall_compliance_score": 72
+  }
+}
+```
+
+Limits applied at export time:
+
+- Up to **200** open vulnerabilities
+- Up to **100** open alerts
+- Latest **20** CIS snapshots
+
+## PDF compliance report
+
+The PDF includes:
+
+- Branded header with overall score and status
+- Executive summary metrics (agents, CVEs, alerts, emails)
+- Article 21 control table
+- Fleet overview
+- Top open vulnerabilities and alerts
+- Recent CIS scans and breach monitor status
+- Legal disclaimer (automated evidence, not certification)
+
+Customize branding via API environment:
+
+```bash
+REPORT_BRAND_NAME=Acme Corp
+REPORT_BRAND_TAGLINE=Security Operations
+```
+
+## When to export
+
+| Scenario | Recommendation |
+|----------|----------------|
+| Monthly compliance review | Scheduled PDF archive |
+| Pre-audit | JSON pack + PDF same day as review |
+| After remediation sprint | Re-export to show delta |
+| Customer due diligence | PDF with executive summary |
+
+<Note>
+  Exports are **point-in-time**. Store exports with timestamps in your document management system.
+</Note>
+
+## What evidence does not include
+
+- Raw full disk logs or SIEM archives
+- Legal opinions or signed management assertions
+- Third-party penetration test reports (attach separately)
+
+## Related
+
+- [Export compliance report](/guides/export-compliance-report)
+- [Compliance API](/api-reference/dashboard/compliance)

@@ -1,0 +1,101 @@
+---
+title: Tenants and authentication
+description: How Beacon isolates customers and secures agent and dashboard access.
+---
+
+Beacon is **multi-tenant**. Every agent, alert, and compliance score belongs to exactly one tenant.
+
+## Tenants
+
+| Environment | Tenant ID source |
+|-------------|------------------|
+| Production | Clerk **organization ID** (`org_...`) |
+| Local dev | `DEV_TENANT_ID` (default `org_dev`) |
+
+The dashboard and API must agree on tenant scope. In production, Clerk maps users to organizations automatically.
+
+## Dashboard authentication
+
+### Production (Clerk)
+
+1. User signs in via Clerk.
+2. Dashboard obtains session JWT.
+3. API routes validate JWT and extract `org_id` as `tenant_id`.
+
+Configure Clerk keys on both **beacon-dashboard** and **beacon-api**. See [Configure Clerk](/guides/configure-clerk).
+
+### Development (no Clerk)
+
+When Clerk keys are absent:
+
+1. Set `DEV_MODE=true` on the API.
+2. Set `DEV_TENANT_ID=org_dev` on API and dashboard.
+3. Dashboard sends `X-Tenant-ID: org_dev` on API requests.
+
+<Warning>
+  Never enable `DEV_MODE` in production. It bypasses Clerk validation.
+</Warning>
+
+## Agent authentication
+
+### Install token (one-time)
+
+- Created via `POST /api/install-tokens`
+- Expires after **24 hours**
+- Consumed on successful registration
+- Bound to the creating tenant
+
+### Agent JWT (ongoing)
+
+After registration, the agent holds:
+
+| Field | Purpose |
+|-------|---------|
+| `agent_id` | UUID in API |
+| `agent_secret` | HMAC key for JWT signing |
+| `tenant_id` | Scopes all uploads |
+| `platform_url` | API base URL |
+
+Each request signs a JWT:
+
+- Algorithm: **HS256**
+- TTL: **5 minutes**
+- Claims include `agent_id` and `tenant_id`
+
+The API rejects expired or invalid tokens.
+
+### Credential storage
+
+| OS | Default path |
+|----|--------------|
+| Linux | `/etc/nis2-agent/credentials.json` |
+| macOS (dev) | `~/.config/nis2-agent/credentials.json` |
+| Windows | `%PROGRAMDATA%\NIS2Agent\credentials.json` |
+
+Override with `NIS2_CREDENTIALS_PATH`.
+
+## CORS
+
+Set `CORS_ORIGINS` on the API to your dashboard URL(s). Default includes `http://localhost:3000`.
+
+## Security checklist
+
+<Steps>
+  <Step title="Use Clerk in production">
+    Disable dev tenant headers.
+  </Step>
+  <Step title="Rotate compromised agents">
+    Remove agent record and re-register with a new token if secret is exposed.
+  </Step>
+  <Step title="HTTPS everywhere">
+    Terminate TLS at your load balancer; agents should use `https://` platform URLs.
+  </Step>
+  <Step title="Restrict install token creation">
+    Only admin roles should access Install Agent settings.
+  </Step>
+</Steps>
+
+## Related
+
+- [Agent API: Register](/api-reference/agent/register)
+- [Configure Clerk](/guides/configure-clerk)

@@ -1,0 +1,82 @@
+---
+title: Security events
+description: How Beacon Host collects logs, filters noise, and triggers detection rules.
+---
+
+Beacon focuses on **security-relevant events** — not full SIEM log ingestion. Both the agent and API apply filters before storage.
+
+## Categories
+
+| Category | Examples | Stored |
+|----------|----------|--------|
+| **auth** | SSH login, failed authentication, session opened | Yes |
+| **privilege** | sudo, admin group changes, privilege escalation | Yes |
+| **persistence** | New services, cron, launchctl load | Yes |
+| **tamper** | Audit log cleared, agent heartbeat stopped | Yes |
+| **system** | Generic launchd/daemon chatter | No |
+
+Only **auth, privilege, persistence, tamper** categories are persisted.
+
+## Collection by platform
+
+### macOS
+
+- Source: `log show` with security keyword predicate
+- Window: last **2 minutes** per run
+- Module interval: default **5 minutes**
+
+### Linux
+
+- Sources: `journalctl` (sshd, sudo, systemd) + `/var/log/auth.log` tail
+- Severity filter: warning and above
+
+### Windows
+
+- Source: Security event log via PowerShell
+- Event IDs: 4624, 4625, 4720, 4732, 7045, 1102, and others in the NIS2 detection set
+- Max **50 events** per batch
+
+## Platform-side retention
+
+| Limit | Value |
+|-------|-------|
+| Max events per ingest batch | 50 |
+| Dedup window | 24 hours (by `event_id`) |
+| Retention | 7 days |
+| Max per agent | 2,000 events |
+| Auto-prune | Launchd noise, generic system rows |
+
+## Rules engine
+
+When security logs are stored, Beacon evaluates **detection rules** and creates **alerts**.
+
+| Group | Rules |
+|-------|-------|
+| Authentication | AUTH-001 brute force · AUTH-002 off-hours login |
+| Privilege | PRIV-001 privileged activity · PRIV-002 admin group change |
+| Persistence | PERSIST-001 new service · PERSIST-002 scheduled task |
+| Tamper | TAMPER-001 audit log cleared · TAMPER-002 heartbeat stopped |
+
+Rules are **OS-aware** — Windows event ID patterns do not fire on macOS, and benign macOS noise is filtered.
+
+<Danger>
+  **AUTH-001** and **PRIV-001** are tuned for production patterns. Dev machines (frequent sudo, local testing) may generate alerts — resolve or tune rules as you harden deployments.
+</Danger>
+
+## Alert deduplication
+
+- Same rule on same agent: no duplicate **open** alert within **30 minutes**
+- TAMPER-002 uses a **120 minute** window when active
+
+## Dashboard surfaces
+
+| UI | Shows |
+|----|-------|
+| **Log Monitoring** | Open alerts, rules, remediation actions |
+| **Security Events** | Stored log rows (filtered categories) |
+| **Compliance → Logging control** | Open critical/high alert counts |
+
+## Related
+
+- [Dashboard alerts API](/api-reference/dashboard/alerts)
+- [Incidents and remediation](/guides/incidents-and-remediation)
