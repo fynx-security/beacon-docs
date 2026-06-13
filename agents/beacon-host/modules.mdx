@@ -1,0 +1,97 @@
+---
+title: Modules
+description: Scheduled collection modules in Beacon Host.
+---
+
+Modules implement the `Module` interface — `Name()` and `Run(ctx, config)` — and are registered in the agent scheduler.
+
+## Default configuration
+
+Pushed from Beacon API remote config:
+
+```json
+{
+  "modules": {
+    "inventory": { "enabled": true, "interval_seconds": 300 },
+    "logs": { "enabled": true, "interval_seconds": 300 },
+    "cis": { "enabled": true, "schedule": "0 2 * * *" },
+    "vuln": { "enabled": true, "schedule": "0 3 * * *" },
+    "fim": { "enabled": false }
+  }
+}
+```
+
+First module run occurs ~**15 seconds** after connect, in addition to cron schedules.
+
+## inventory
+
+Collects host asset evidence:
+
+- CPU, memory, disk
+- OS, kernel, uptime
+- Network interfaces
+- Installed software packages
+- Local users and admin accounts
+- Running processes
+- Listening ports
+
+**API handler:** `process_inventory_event` → `InventorySnapshot`
+
+Feeds **Asset inventory** compliance control.
+
+## cis
+
+Runs CIS benchmark scans:
+
+| OS | Engine |
+|----|--------|
+| Linux | OpenSCAP or built-in checks |
+| macOS | NIST mSCP CIS Level 1 |
+| Windows | CIS-CAT or PowerShell checks |
+
+Returns scan ID, policy name, score %, and per-check pass/fail.
+
+**API handler:** CIS snapshot + check rows
+
+## vuln
+
+Runs **Trivy** filesystem scan. Reports CVE ID, severity, package, installed/fix versions.
+
+**API handler:** `VulnScan` + `Vulnerability` rows
+
+## logs
+
+Collects **security-relevant** OS logs (not full log tail). Applies:
+
+- Platform-specific collectors
+- Category classification (`auth`, `privilege`, `persistence`, `tamper`, `system`)
+- Batch cap and `system` category drop before upload
+
+**API handler:** `process_logs_event` → rules engine → `SystemLogEvent` + `Alert`
+
+## fim
+
+Uses **fsnotify** on sensitive paths:
+
+- `/etc`, `/usr/bin`, launchd directories (platform-specific)
+
+Events include path, change type, SHA256 hash.
+
+**Disabled by default** — enable when change detection is in scope.
+
+## Module results transport
+
+All modules POST to:
+
+```
+POST /api/agent/events
+{
+  "module": "cis",
+  "data": { ... module payload ... }
+}
+```
+
+## Related
+
+- [Security events concept](/concepts/security-events)
+- [Platform support](/agents/beacon-host/platform-support)

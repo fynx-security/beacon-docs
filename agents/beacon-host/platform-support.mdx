@@ -1,0 +1,56 @@
+---
+title: Platform support
+description: OS support matrix for Beacon Host modules.
+---
+
+## Support matrix
+
+| Capability | Linux | macOS | Windows |
+|------------|-------|-------|---------|
+| Registration & heartbeat | Yes | Yes | Yes |
+| Remote config & commands | Yes | Yes | Yes |
+| Inventory | Yes | Yes | Yes |
+| CIS benchmark | OpenSCAP / built-in | mSCP CIS L1 | CIS-CAT / PowerShell |
+| Vulnerability scan | Trivy | Trivy | Trivy |
+| Security logs | journalctl + auth.log | unified log | Security Event Log |
+| FIM | fsnotify | fsnotify | fsnotify |
+| Self-update | Yes | Yes | Yes |
+
+## Build targets
+
+```bash
+make build       # current platform
+make build-all   # linux amd64, windows amd64, darwin arm64
+```
+
+## Platform notes
+
+### Linux
+
+- Credentials: `/etc/nis2-agent/credentials.json`
+- Install via `install.sh` + systemd
+- CIS prefers OpenSCAP when packages available
+
+### macOS
+
+- Dev credentials may use `~/.config/nis2-agent/`
+- Full CIS requires admin for mSCP
+- Log collection uses `log show` with security predicate (2-minute window)
+
+### Windows
+
+- Credentials: `%PROGRAMDATA%\NIS2Agent\credentials.json`
+- Log collection via PowerShell `Get-WinEvent`
+- CIS via PowerShell-based checks
+
+## Architecture builds
+
+| GOOS | GOARCH | Artifact |
+|------|--------|----------|
+| linux | amd64 | `agent-linux-amd64` |
+| windows | amd64 | `agent-windows-amd64.exe` |
+| darwin | arm64 | `agent-darwin-arm64` |
+
+## Related
+
+- [Install Beacon Host](/guides/install-beacon-host)
