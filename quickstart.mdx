@@ -1,0 +1,117 @@
+---
+title: Quickstart
+description: Run Beacon locally — API, dashboard, and your first Beacon Host agent.
+---
+
+Connect one machine to Beacon and see CIS scores, vulnerabilities, and compliance controls in the dashboard.
+
+<Info>
+  **Time:** ~10 minutes · **Stack:** Docker (optional), Python 3.12+, Node 20+, Go 1.23+
+</Info>
+
+## Prerequisites
+
+- macOS, Linux, or Windows for the agent
+- Ports **8000** (API) and **3000** or **3002** (dashboard) available
+
+## 1. Start the database (optional)
+
+For PostgreSQL instead of SQLite:
+
+```bash
+cd beacon-api
+docker compose up -d
+```
+
+Set `DATABASE_URL=postgresql://nis2:nis2@localhost:5432/nis2` in `.env`.
+
+## 2. Run Beacon API
+
+```bash
+cd beacon-api
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+# DEV_MODE=true and DEV_TENANT_ID=org_dev are set in .env.example
+uvicorn app.main:app --reload --port 8000
+```
+
+Verify: `curl http://localhost:8000/health` → `{"status":"ok"}`
+
+## 3. Run Beacon Dashboard
+
+```bash
+cd beacon-dashboard
+npm install
+cp .env.example .env.local
+# Set DEV_TENANT_ID=org_dev for dev without Clerk
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) (or the port Next.js prints).
+
+## 4. Create an install token
+
+From the dashboard: **Administration → Install Agent → Generate token**
+
+Or via API:
+
+```bash
+curl -X POST http://localhost:8000/api/install-tokens \
+  -H "X-Tenant-ID: org_dev" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+Copy the `token` from the response.
+
+## 5. Install Beacon Host
+
+```bash
+cd beacon-host-agent
+export NIS2_PLATFORM_URL=http://localhost:8000
+make build
+./bin/beacon-host-agent --token=YOUR_TOKEN
+```
+
+On first run the agent:
+
+1. Registers with the platform
+2. Downloads **Trivy** (and CIS tooling per OS)
+3. Runs **inventory, CIS, and vuln** within ~15 seconds
+4. Sends a heartbeat every 60 seconds
+
+<Note>
+  macOS CIS scans require admin rights for the full mSCP audit. Dev machines without admin still connect and run other modules.
+</Note>
+
+## 6. Confirm in the dashboard
+
+| Page | What to check |
+|------|----------------|
+| **Dashboard** | Agent appears online, compliance score populates |
+| **Agents** | Hostname, OS, last seen |
+| **CIS Benchmark** | Scan score and check list |
+| **Vulnerabilities** | Open CVEs from Trivy |
+| **Compliance** | Article 21 control breakdown |
+
+## 7. Export evidence
+
+Go to **Compliance → Download PDF report** or **JSON audit pack**.
+
+---
+
+## Troubleshooting
+
+| Symptom | Fix |
+|---------|-----|
+| Dashboard shows no data | Confirm `NEXT_PUBLIC_API_URL` and matching `DEV_TENANT_ID` on API and web |
+| Agent registration fails | Token expires after 24h; generate a new one |
+| Agent offline in UI | Heartbeat timeout is 120s; check API is reachable |
+| macOS log noise | Beacon filters launchd chatter; see [Security events](/concepts/security-events) |
+
+## Next steps
+
+- [Deploy for production](/guides/deploy-api)
+- [Configure Clerk authentication](/guides/configure-clerk)
+- [Understand compliance scoring](/concepts/compliance-scoring)

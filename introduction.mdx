@@ -1,0 +1,79 @@
+---
+title: Introduction
+description: Beacon is continuous NIS2 compliance evidence — agents collect posture data, the platform scores Article 21 controls, and you export audit-ready reports.
+---
+
+## What is Beacon?
+
+Beacon is a **compliance and security posture platform** built for organizations preparing for **NIS2**. It is not a SIEM or XDR product. Beacon answers a different question:
+
+> *Can we show continuous evidence that our security measures are in place — and export that proof for auditors?*
+
+Beacon connects three components:
+
+| Component | Repository | Role |
+|-----------|------------|------|
+| **Beacon Dashboard** | `beacon-dashboard` | Web UI for fleet, posture, alerts, and compliance |
+| **Beacon API** | `beacon-api` | Ingestion, scoring, rules engine, evidence export |
+| **Beacon Host** | `beacon-host-agent` | Lightweight agent on servers and workstations |
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Connect your first agent in under 10 minutes.
+  </Card>
+  <Card title="Architecture" icon="sitemap" href="/architecture">
+    How agents, API, and dashboard fit together.
+  </Card>
+  <Card title="Compliance scoring" icon="chart-line" href="/concepts/compliance-scoring">
+    How Article 21 controls are calculated.
+  </Card>
+  <Card title="Export audit reports" icon="file-pdf" href="/guides/export-compliance-report">
+    PDF and JSON evidence packs.
+  </Card>
+</CardGroup>
+
+## What Beacon collects
+
+Beacon Host gathers **evidence**, not raw telemetry lakes:
+
+- **CIS benchmark** scores (Linux, macOS, Windows)
+- **Host vulnerabilities** (Trivy)
+- **Asset inventory** (hardware, users, ports, software)
+- **Security events** (auth, privilege, persistence, tamper)
+- **File integrity** changes on sensitive paths (optional)
+
+The platform maps this data to **NIS2 Article 21 controls**, surfaces open findings, and produces **exportable audit packs**.
+
+## What Beacon is not
+
+<Warning>
+  Beacon does not certify your organization as NIS2 compliant. It automates evidence collection and posture visibility to support your compliance program.
+</Warning>
+
+- Not a replacement for legal counsel or formal certification
+- Not a cloud SIEM or EDR platform
+- Not repository/dependency SCA (host-level scanning only today)
+
+## Product family
+
+Beacon is the **compliance platform**. Future collectors will use their own names while feeding the same platform:
+
+| Collector | Status | Purpose |
+|-----------|--------|---------|
+| **Beacon Host** | Available | Endpoint CIS, vulns, logs, inventory, FIM |
+| **Beacon Cluster** | Planned | Kubernetes posture and evidence |
+| **Other Fynx tools** | Separate products | Non-compliance tooling lives outside Beacon |
+
+## Next steps
+
+<Steps>
+  <Step title="Read the architecture">
+    Understand data flow from agent to audit PDF.
+  </Step>
+  <Step title="Run the quickstart">
+    Deploy API, dashboard, and one Beacon Host agent locally.
+  </Step>
+  <Step title="Review control mapping">
+    See how automated scores map to Article 21.
+  </Step>
+</Steps>
