@@ -1,0 +1,98 @@
+---
+title: Install Beacon Host
+description: Deploy the endpoint agent on Linux, macOS, or Windows.
+---
+
+Beacon Host is the endpoint collector for CIS benchmarks, vulnerabilities, inventory, security logs, and optional file integrity monitoring.
+
+## Requirements
+
+| Platform | Requirements |
+|----------|--------------|
+| Linux | systemd (for service install), outbound HTTPS |
+| macOS | Admin recommended for full CIS (mSCP) |
+| Windows | PowerShell, outbound HTTPS |
+
+## Install token
+
+Generate a token before installing:
+
+1. Dashboard → **Administration → Install Agent**
+2. Click **Generate install token**
+3. Copy token — valid **24 hours**, single use
+
+## Linux (script)
+
+```bash
+curl -sSL https://YOUR_BEACON_API/install.sh | sudo bash -s -- \
+  --token=YOUR_TOKEN \
+  --platform-url=https://YOUR_BEACON_API
+```
+
+The script installs the binary to `/usr/local/bin`, registers the agent, and creates a systemd service.
+
+## Manual install
+
+```bash
+export NIS2_PLATFORM_URL=https://YOUR_BEACON_API
+./beacon-host-agent --token=YOUR_TOKEN
+```
+
+First-run bootstrap downloads **Trivy** to the agent data directory automatically.
+
+## macOS (development)
+
+```bash
+export NIS2_PLATFORM_URL=http://localhost:8000
+make build
+./bin/beacon-host-agent --token=YOUR_TOKEN
+```
+
+Credentials default to `~/.config/nis2-agent/credentials.json` when `/etc/nis2-agent` is not writable.
+
+## Windows
+
+Download the Windows binary from your release endpoint, set platform URL, and run:
+
+```powershell
+$env:NIS2_PLATFORM_URL="https://YOUR_BEACON_API"
+.\beacon-host-agent.exe --token=YOUR_TOKEN
+```
+
+## Verify
+
+```bash
+# API health
+curl https://YOUR_BEACON_API/health
+
+# Agent appears online in dashboard within 2 minutes
+```
+
+Check dashboard **Agents** — status should show **Online** with recent last seen.
+
+## Environment variables
+
+| Variable | Description |
+|----------|-------------|
+| `NIS2_PLATFORM_URL` | Beacon API base URL (required) |
+| `NIS2_DATA_DIR` | Override agent data directory |
+| `NIS2_CREDENTIALS_PATH` | Override credentials file path |
+| `NIS2_MSCP_SCRIPT` | macOS CIS script override |
+| `NIS2_MSCP_TAG` | macOS mSCP git tag override |
+
+## Default module schedule
+
+| Module | Default | Interval |
+|--------|---------|----------|
+| inventory | Enabled | 300s |
+| logs | Enabled | 300s |
+| cis | Enabled | Cron `0 2 * * *` + first run on connect |
+| vuln | Enabled | Cron `0 3 * * *` + first run on connect |
+| fim | Disabled | — |
+
+Remote config from the platform can override schedules without reinstall.
+
+## Related
+
+- [Beacon Host modules](/agents/beacon-host/modules)
+- [Platform support matrix](/agents/beacon-host/platform-support)

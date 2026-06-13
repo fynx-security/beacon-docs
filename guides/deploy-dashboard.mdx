@@ -1,0 +1,57 @@
+---
+title: Deploy Beacon Dashboard
+description: Production deployment for the Next.js dashboard.
+---
+
+## Requirements
+
+- Node.js 20+
+- Running Beacon API with Clerk configured
+- HTTPS domain for production
+
+## Environment variables
+
+`.env.local` or platform env:
+
+```bash
+NEXT_PUBLIC_API_URL=https://api.yourdomain.com
+
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_...
+CLERK_SECRET_KEY=sk_live_...
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+```
+
+Remove `DEV_TENANT_ID` in production — tenant scope comes from Clerk org.
+
+## Build and run
+
+```bash
+npm install
+npm run build
+npm run start
+```
+
+Default port **3000**. Set `PORT` for PaaS hosts.
+
+## Vercel deployment
+
+1. Import `beacon-dashboard` repository
+2. Set environment variables in project settings
+3. Ensure `NEXT_PUBLIC_API_URL` points to production API
+4. Add dashboard URL to API `CORS_ORIGINS`
+
+## API proxy routes
+
+The dashboard includes Next.js route handlers under `app/api/*` that forward requests to Beacon API with Clerk session tokens. No additional BFF configuration is required.
+
+## Clerk organizations
+
+Map each customer to a Clerk **Organization**. The organization ID becomes `tenant_id` in Beacon API — agents and data isolate automatically.
+
+[Configure Clerk →](/guides/configure-clerk)
+
+## Related
+
+- [Dashboard overview](/dashboard/overview)
+- [Deploy API](/guides/deploy-api)

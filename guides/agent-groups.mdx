@@ -1,0 +1,54 @@
+---
+title: Agent groups
+description: Organize fleet into groups and run bulk commands.
+---
+
+Agent groups let you target **commands and operations** at collections of hosts — for example all Linux servers or a regional office.
+
+## Create a group
+
+Dashboard → **Fleet → Agent Groups**
+
+1. Click **Create group**
+2. Name and optional description
+3. Add agent members from fleet list
+
+## Bulk commands
+
+Queue a command for every member:
+
+| Command | Use case |
+|---------|----------|
+| `run_module` | Force CIS scan across group |
+| `fetch_logs` | Collect stdout after incident |
+| `restart` | Rolling agent restart |
+
+API:
+
+```bash
+POST /api/agent-groups/{id}/commands
+{
+  "command": "run_module",
+  "module": "vuln"
+}
+```
+
+Results appear per agent in command history.
+
+## When to use groups
+
+| Pattern | Example group |
+|---------|---------------|
+| OS family | `linux-servers`, `macos-workstations` |
+| Environment | `production`, `staging` |
+| Location | `eu-west-endpoints` |
+| Compliance scope | `essential-entity-systems` |
+
+<Note>
+  Compliance scores are **tenant-wide** today — groups organize operations, not separate scorecards.
+</Note>
+
+## Related
+
+- [Manage fleet](/guides/manage-fleet)
+- [Agents concept](/concepts/agents)

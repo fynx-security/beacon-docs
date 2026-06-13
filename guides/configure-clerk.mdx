@@ -1,0 +1,71 @@
+---
+title: Configure Clerk
+description: Set up Clerk authentication for production multi-tenancy.
+---
+
+Beacon uses [Clerk](https://clerk.com) for dashboard authentication and tenant isolation in production.
+
+## 1. Create a Clerk application
+
+1. Sign up at clerk.com
+2. Create an application
+3. Enable **Organizations** (required for multi-tenant B2B)
+
+## 2. Configure dashboard env
+
+In `beacon-dashboard`:
+
+```bash
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_...
+CLERK_SECRET_KEY=sk_live_...
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+```
+
+## 3. Configure API env
+
+In `beacon-api`:
+
+```bash
+CLERK_SECRET_KEY=sk_live_...
+CLERK_JWT_ISSUER=https://<your-clerk-frontend-api>
+DEV_MODE=false
+```
+
+The API validates Clerk JWTs on dashboard routes and extracts `org_id` as `tenant_id`.
+
+## 4. Map users to organizations
+
+| Clerk concept | Beacon mapping |
+|---------------|----------------|
+| Organization | Tenant (`tenant_id`) |
+| Organization member | Dashboard user with org access |
+| JWT `org_id` claim | Scopes all API queries |
+
+Users without an active organization cannot access tenant data.
+
+## 5. CORS
+
+Add your dashboard origin to API `CORS_ORIGINS`:
+
+```bash
+CORS_ORIGINS=https://app.yourdomain.com
+```
+
+## Development without Clerk
+
+For local development only:
+
+| Service | Setting |
+|---------|---------|
+| API | `DEV_MODE=true`, `DEV_TENANT_ID=org_dev` |
+| Dashboard | `DEV_TENANT_ID=org_dev`, omit Clerk keys |
+
+<Tip>
+  Use separate Clerk instances for staging and production.
+</Tip>
+
+## Related
+
+- [Tenants and auth](/concepts/tenants-and-auth)
+- [Deploy dashboard](/guides/deploy-dashboard)

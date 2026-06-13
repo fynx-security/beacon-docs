@@ -1,0 +1,56 @@
+---
+title: Manage fleet
+description: Monitor agents, run modules on demand, and read posture data.
+---
+
+## Fleet overview
+
+**Agents** lists all registered Beacon Host instances for your tenant.
+
+| Column | Meaning |
+|--------|---------|
+| Hostname | Reported host name |
+| OS | `linux`, `darwin`, `windows` |
+| Status | Online if heartbeat within 120s |
+| CIS score | Latest benchmark percentage |
+| CVEs | Count of open vulnerabilities |
+
+Click an agent for detail: CIS history, vulnerabilities, FIM events, security posture cards, and live logs.
+
+## Online status
+
+Agents heartbeat every **60 seconds** by default. The dashboard marks:
+
+| State | Condition |
+|-------|-----------|
+| **Online** | `last_seen` ≤ 120 seconds ago |
+| **Offline** | No recent heartbeat |
+| **Stopped** | Admin disabled via platform |
+
+## Run module on demand
+
+From agent detail or commands API:
+
+```bash
+POST /api/agents/{id}/commands
+{ "command": "run_module", "module": "cis" }
+```
+
+Commands deliver on the next heartbeat.
+
+## Enable or disable agent
+
+Remote **shutdown** or platform-side disable pauses module scheduling without deleting the agent record.
+
+## Install additional agents
+
+Each host needs its own registration:
+
+1. Generate new install token
+2. Run Beacon Host with token on target machine
+3. Agent appears under same tenant automatically
+
+## Related
+
+- [Agent groups](/guides/agent-groups)
+- [Dashboard agents API](/api-reference/dashboard/agents)

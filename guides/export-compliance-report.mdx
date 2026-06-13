@@ -1,0 +1,71 @@
+---
+title: Export compliance report
+description: Generate PDF and JSON audit packs from the dashboard or API.
+---
+
+## From the dashboard
+
+1. Open **Compliance**
+2. Review overall score and control breakdown
+3. Click **Download PDF report** or **JSON audit pack**
+
+Files download with dated filenames:
+
+- `nis2-compliance-report-2026-06-13.pdf`
+- `nis2-evidence-2026-06-13.json`
+
+## From the API
+
+### JSON audit pack
+
+```bash
+curl -H "Authorization: Bearer $CLERK_JWT" \
+  https://api.yourdomain.com/api/compliance/evidence \
+  -o evidence.json
+```
+
+Dev mode:
+
+```bash
+curl -H "X-Tenant-ID: org_dev" \
+  http://localhost:8000/api/compliance/evidence
+```
+
+### PDF report
+
+```bash
+curl -H "X-Tenant-ID: org_dev" \
+  http://localhost:8000/api/compliance/evidence/report \
+  -o report.pdf
+```
+
+## Customize PDF branding
+
+Set on Beacon API:
+
+```bash
+REPORT_BRAND_NAME=Your Company
+REPORT_BRAND_TAGLINE=Security Operations
+```
+
+## Best practices
+
+<Steps>
+  <Step title="Export after meaningful change">
+    Post-remediation or monthly cadence — not every hour.
+  </Step>
+  <Step title="Store with timestamp">
+    Filename includes date; add ticket or audit reference in your DMS.
+  </Step>
+  <Step title="Pair PDF with JSON">
+    PDF for humans; JSON for verification or custom analytics.
+  </Step>
+  <Step title="Include scope note">
+    Document which agents were in scope for the audit period.
+  </Step>
+</Steps>
+
+## Related
+
+- [Evidence and audits](/concepts/evidence-and-audits)
+- [Compliance API](/api-reference/dashboard/compliance)
