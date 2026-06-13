@@ -1,0 +1,8 @@
+{
+  "name": "beacon-docs",
+  "private": true,
+  "scripts": {
+    "dev": "mintlify dev --port 3333",
+    "install-cli": "npm install -g mintlify"
+  }
+}

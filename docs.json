@@ -1,0 +1,124 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Beacon",
+  "colors": {
+    "primary": "#0092F9",
+    "light": "#22D3EE",
+    "dark": "#020715"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "architecture"
+            ]
+          },
+          {
+            "group": "Concepts",
+            "pages": [
+              "concepts/agents",
+              "concepts/tenants-and-auth",
+              "concepts/compliance-scoring",
+              "concepts/security-events",
+              "concepts/evidence-and-audits"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/install-beacon-host",
+              "guides/deploy-api",
+              "guides/deploy-dashboard",
+              "guides/configure-clerk",
+              "guides/manage-fleet",
+              "guides/agent-groups",
+              "guides/export-compliance-report",
+              "guides/incidents-and-remediation"
+            ]
+          },
+          {
+            "group": "Beacon Host",
+            "pages": [
+              "agents/beacon-host/overview",
+              "agents/beacon-host/modules",
+              "agents/beacon-host/platform-support"
+            ]
+          },
+          {
+            "group": "Dashboard",
+            "pages": [
+              "dashboard/overview",
+              "dashboard/pages"
+            ]
+          },
+          {
+            "group": "Compliance",
+            "pages": [
+              "compliance/nis2-article-21",
+              "compliance/controls"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api-reference/introduction"
+            ]
+          },
+          {
+            "group": "Agent API",
+            "pages": [
+              "api-reference/agent/register",
+              "api-reference/agent/heartbeat",
+              "api-reference/agent/events",
+              "api-reference/agent/config"
+            ]
+          },
+          {
+            "group": "Dashboard API",
+            "pages": [
+              "api-reference/dashboard/agents",
+              "api-reference/dashboard/compliance",
+              "api-reference/dashboard/alerts",
+              "api-reference/dashboard/incidents"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "logo": {
+    "light": "/logo/beacon-light.svg",
+    "dark": "/logo/beacon-dark.svg"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "GitHub",
+        "href": "https://github.com/fynx-security"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Get started",
+      "href": "/quickstart"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/fynx-security"
+    }
+  }
+}
