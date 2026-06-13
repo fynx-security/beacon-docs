@@ -1,0 +1,61 @@
+---
+title: Pages reference
+description: What each dashboard page shows and when to use it.
+---
+
+## Overview (`/`)
+
+**Purpose:** Executive snapshot of compliance posture.
+
+| Element | Data |
+|---------|------|
+| Overall compliance score | Weighted average of 5 controls |
+| Article 21 control cards | Per-control score, status, summary |
+| Recent agents | Online status, hostname, last seen |
+
+## Agents (`/agents`)
+
+Fleet table — all Beacon Host agents for tenant. Columns: hostname, OS, status, CIS score, CVE count, last seen.
+
+**Agent detail** (`/agents/[id]`): posture cards, CIS brief, vulnerability panel, FIM events, events timeline chart, remote actions.
+
+## Agent Groups (`/agents/groups`)
+
+Create groups, add members, send bulk commands.
+
+## CIS Benchmark (`/cis`)
+
+Trend chart and scan history table. **Scan detail** (`/cis/[id]`): individual check pass/fail results.
+
+## Vulnerabilities (`/vulnerabilities`)
+
+Severity overview charts and sortable CVE table. Patch or resolve CVEs inline.
+
+## Log Monitoring (`/alerts`)
+
+Security rules reference, open alerts by agent, alert remediation. Renamed from generic "alerts" — focuses on **security event detections**.
+
+## Agent Logs (`/logs`)
+
+Live stdout/stderr stream from agents (terminal-style view). Separate from security event storage.
+
+## Compliance (`/compliance`)
+
+Article 21 control breakdown, overall score, **PDF report** and **JSON audit pack** download buttons.
+
+## Incidents (`/incidents`)
+
+Manual incident register — track investigations linked to your NIS2 incident process.
+
+## Breach Monitor (`/breach-check`)
+
+Add emails to monitor against breach databases. Feeds **Credential exposure** control.
+
+## Install Agent (`/settings/agents`)
+
+Generate one-time install tokens for Beacon Host registration.
+
+## Related
+
+- [Export compliance report](/guides/export-compliance-report)
+- [Manage fleet](/guides/manage-fleet)

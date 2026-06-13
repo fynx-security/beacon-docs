@@ -1,0 +1,55 @@
+---
+title: NIS2 Article 21
+description: Context for Beacon's simplified Article 21 control mapping.
+---
+
+The **NIS2 Directive** (EU 2022/2555) requires essential and important entities to implement risk management measures — **Article 21** lists ten thematic areas of cybersecurity.
+
+Beacon maps automated evidence to a **simplified subset** of five controls suitable for continuous posture monitoring. This is a **product mapping**, not legal advice.
+
+## Article 21 themes (summary)
+
+| # | Theme |
+|---|-------|
+| 1 | Policies on risk analysis and information system security |
+| 2 | Incident handling |
+| 3 | Business continuity and crisis management |
+| 4 | Supply chain security |
+| 5 | Security in acquisition, development, maintenance |
+| 6 | Policies to assess effectiveness of measures |
+| 7 | Basic cyber hygiene and training |
+| 8 | Cryptography and encryption |
+| 9 | Human resources security, access control, asset management |
+| 10 | Multi-factor authentication, secured communications |
+
+## What Beacon automates today
+
+| Article 21 area | Beacon coverage |
+|-----------------|-----------------|
+| Risk analysis / policies | Partial — CIS + vuln scores as proxies |
+| Incident handling | Incidents register + alert workflow |
+| Asset management | Inventory module + fleet visibility |
+| Access control / hygiene | CIS checks + privilege/auth alerts |
+| Vulnerability handling | Trivy + CVE tracking |
+| Security monitoring | Log rules engine + alerts |
+| Credential risks | Breach email monitor |
+
+<Warning>
+  Gaps remain — business continuity, supply chain questionnaires, training records, and crypto policies require manual evidence outside Beacon today.
+</Warning>
+
+## Essential vs important entities
+
+NIS2 classification depends on sector and size under national transposition. Beacon does not determine your entity category — it provides **technical evidence** regardless of classification.
+
+## Using Beacon in an audit
+
+1. Scope agents to in-scope systems
+2. Run continuous collection through audit period
+3. Export monthly PDF + JSON packs
+4. Pair with policy documents and management sign-off (external to Beacon)
+
+## Related
+
+- [Control formulas](/compliance/controls)
+- [Compliance scoring](/concepts/compliance-scoring)

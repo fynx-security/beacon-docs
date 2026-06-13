@@ -1,0 +1,87 @@
+---
+title: Control formulas
+description: Exact scoring logic for each NIS2 Article 21 control in Beacon.
+---
+
+Status thresholds for all controls:
+
+| Status | Score |
+|--------|-------|
+| Green | ≥ 80 |
+| Amber | ≥ 60 |
+| Red | &lt; 60 |
+
+## 21_2_f_cis — Security configuration (CIS)
+
+**Input:** Latest CIS snapshot `score_pct` per agent.
+
+**Formula:** Average of all agent CIS scores. If no agents → 0% red.
+
+**Improve:** Fix failed CIS checks; rerun `cis` module.
+
+---
+
+## 21_2_f_vuln — Vulnerability management
+
+**Input:** Open critical CVEs and age since `first_detected_at`.
+
+| Condition | Score |
+|-----------|-------|
+| No open critical CVEs older than 30 days | 95 |
+| Critical CVEs open > 30 days | 70 |
+| Critical CVEs open > 90 days | 40 |
+
+**Improve:** Patch, upgrade packages, or mark resolved after verification.
+
+---
+
+## 21_2_j_inventory — Asset inventory
+
+**Input:** Agents vs agents with `InventorySnapshot` in last **7 days**.
+
+**Formula:** `100 × (covered_agents / total_agents)`
+
+**Improve:** Enable inventory module (default 300s interval); ensure agents online.
+
+---
+
+## 21_2_b_logging — Security monitoring & logging
+
+**Input:** Open alerts by severity and age.
+
+| Condition | Score |
+|-----------|-------|
+| Any open **critical** alert | 35 |
+| Open **high** alert older than 7 days | 65 |
+| Open high alerts (all &lt; 7 days) | 85 |
+| No open critical/high | 95 |
+
+**Improve:** Triage alerts in Log Monitoring; resolve false positives; fix true positives.
+
+---
+
+## 21_2_h_credentials — Credential exposure
+
+**Input:** Monitored emails and breach status.
+
+| Condition | Score |
+|-----------|-------|
+| No emails configured | 70 |
+| Emails configured | `100 × (clean_emails / total_emails)` |
+
+**Improve:** Add corporate emails to Breach Monitor; rotate credentials for hits.
+
+---
+
+## Overall score
+
+```
+overall = mean(control.score_pct for control in controls)
+```
+
+Overall status uses the same green/amber/red thresholds.
+
+## Related
+
+- [Compliance scoring concept](/concepts/compliance-scoring)
+- [Export compliance report](/guides/export-compliance-report)

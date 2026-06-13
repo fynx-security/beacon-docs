@@ -1,0 +1,43 @@
+---
+title: Dashboard overview
+description: Navigate the Beacon web interface for compliance and security posture.
+---
+
+The **Beacon Dashboard** is the operator interface for fleet visibility, findings, compliance scores, and evidence export.
+
+Repository: [beacon-dashboard](https://github.com/fynx-security/beacon-dashboard)
+
+## Navigation groups
+
+| Group | Purpose |
+|-------|---------|
+| **Overview** | Compliance score, Article 21 controls, recent agents |
+| **Fleet** | Agents list, agent groups |
+| **Monitoring** | Log monitoring (alerts), agent live logs |
+| **Security Posture** | CIS, vulnerabilities, breach monitor |
+| **Compliance** | Control map, evidence export, incidents |
+| **Administration** | Install tokens |
+
+## Design system
+
+- Dark **cyber** theme (primary `#0092F9`, background `#020715`)
+- shadcn/ui components
+- Responsive sidebar layout
+
+See [Layout conventions](https://github.com/fynx-security/beacon-dashboard/blob/main/LAYOUT.md) in the repository.
+
+## Authentication
+
+| Mode | Behavior |
+|------|----------|
+| Production | Clerk sign-in, org-scoped data |
+| Development | `DEV_TENANT_ID` header bypass |
+
+## API communication
+
+Dashboard pages call Next.js routes under `/app/api/*` which proxy to Beacon API with auth headers. Set `NEXT_PUBLIC_API_URL` to your API base.
+
+## Related
+
+- [Dashboard pages reference](/dashboard/pages)
+- [Deploy dashboard](/guides/deploy-dashboard)
