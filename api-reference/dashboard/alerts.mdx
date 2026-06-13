@@ -1,0 +1,72 @@
+---
+title: Alerts
+description: Security detection alerts and system log endpoints.
+---
+
+## List alerts
+
+```
+GET /api/alerts
+```
+
+Query parameters:
+
+| Param | Description |
+|-------|-------------|
+| `status` | `open`, `resolved`, or `all` (default) |
+| `page` | Page number |
+| `page_size` | Results per page |
+
+```json
+{
+  "items": [
+    {
+      "id": "...",
+      "rule_id": "AUTH-001",
+      "severity": "high",
+      "title": "Brute force login attempt",
+      "status": "open",
+      "hostname": "server-01",
+      "created_at": "2026-06-13T10:00:00Z"
+    }
+  ],
+  "total": 12,
+  "page": 1,
+  "page_size": 25
+}
+```
+
+## Resolve alert
+
+```
+PATCH /api/alerts/{id}
+```
+
+```json
+{ "status": "resolved" }
+```
+
+Resolving alerts improves the **Security monitoring & logging** compliance control score.
+
+## System logs
+
+```
+GET /api/system-logs
+GET /api/system-logs/categories
+```
+
+Returns stored security events (auth, privilege, persistence, tamper categories only).
+
+## Security rules reference
+
+```
+GET /api/security-rules
+GET /api/security-rule-groups
+```
+
+Lists detection rules evaluated by the rules engine.
+
+## Related
+
+- [Security events](/concepts/security-events)
+- [Incidents](/api-reference/dashboard/incidents)

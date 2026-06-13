@@ -1,0 +1,77 @@
+---
+title: API overview
+description: Beacon REST API — agent ingestion and dashboard endpoints.
+---
+
+Beacon API is a **FastAPI** service exposing two authenticated surfaces plus public installer routes.
+
+## Base URL
+
+```
+https://api.yourdomain.com
+```
+
+Local development: `http://localhost:8000`
+
+## OpenAPI
+
+Interactive schema available at:
+
+```
+GET /docs      # Swagger UI
+GET /redoc     # ReDoc
+GET /openapi.json
+```
+
+## Authentication summary
+
+| Surface | Auth | Header |
+|---------|------|--------|
+| Agent routes | Agent JWT (HS256, 5 min) | `Authorization: Bearer <jwt>` |
+| Dashboard routes | Clerk JWT | `Authorization: Bearer <jwt>` |
+| Dev dashboard | Tenant header | `X-Tenant-ID: org_dev` |
+| Register | Install token in body | — |
+| Installer | None | — |
+
+## Route prefixes
+
+| Prefix | Tag | Audience |
+|--------|-----|----------|
+| `/api/agent` | agent | Beacon Host |
+| `/api` | dashboard | Beacon Dashboard |
+| `/install.sh`, `/releases` | installer | Bootstrap |
+
+## Response codes
+
+| Code | Meaning |
+|------|---------|
+| 200 / 201 | Success |
+| 204 | Success, no body |
+| 401 | Invalid or missing auth |
+| 404 | Resource not found |
+| 422 | Validation error |
+
+## Repositories
+
+| Component | Repository |
+|-----------|------------|
+| API source | [beacon-api](https://github.com/fynx-security/beacon-api) |
+| Agent | [beacon-host-agent](https://github.com/fynx-security/beacon-host-agent) |
+| Dashboard | [beacon-dashboard](https://github.com/fynx-security/beacon-dashboard) |
+
+## Related endpoints
+
+<CardGroup cols={2}>
+  <Card title="Register agent" icon="key" href="/api-reference/agent/register">
+    First-time agent registration.
+  </Card>
+  <Card title="Post events" icon="upload" href="/api-reference/agent/events">
+    Module scan results ingestion.
+  </Card>
+  <Card title="Compliance" icon="chart-line" href="/api-reference/dashboard/compliance">
+    Scores and evidence export.
+  </Card>
+  <Card title="Alerts" icon="bell" href="/api-reference/dashboard/alerts">
+    Security detections and remediation.
+  </Card>
+</CardGroup>

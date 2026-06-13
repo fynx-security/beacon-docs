@@ -1,0 +1,40 @@
+---
+title: Agent config
+api: GET /api/agent/config
+description: Remote module configuration for Beacon Host.
+---
+
+Returns module enable flags, schedules, and identifiers. Polled every **5 minutes** by the agent.
+
+## Authentication
+
+`Authorization: Bearer <agent-jwt>`
+
+## Response `200 OK`
+
+```json
+{
+  "agent_id": "...",
+  "tenant_id": "org_...",
+  "modules": {
+    "inventory": { "enabled": true, "interval_seconds": 300 },
+    "logs": { "enabled": true, "interval_seconds": 300 },
+    "cis": { "enabled": true, "schedule": "0 2 * * *" },
+    "vuln": { "enabled": true, "schedule": "0 3 * * *" },
+    "fim": { "enabled": false }
+  }
+}
+```
+
+## Module scheduling
+
+| Field | Description |
+|-------|-------------|
+| `interval_seconds` | Run every N seconds |
+| `schedule` | Cron expression (UTC) |
+
+If both present, cron takes precedence in scheduler sync.
+
+## Related
+
+- [Beacon Host modules](/agents/beacon-host/modules)

@@ -1,0 +1,55 @@
+---
+title: Register agent
+api: POST /api/agent/register
+description: Register a new Beacon Host agent with a one-time install token.
+---
+
+Register Beacon Host on first run. Consumes the install token and returns long-lived credentials.
+
+<Warning>
+  No authentication required — protect install token generation in production.
+</Warning>
+
+## Request body
+
+```json
+{
+  "install_token": "tok_...",
+  "hostname": "web-01.example.com",
+  "os": "linux",
+  "arch": "amd64",
+  "version": "0.1.0"
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `install_token` | string | One-time token from dashboard |
+| `hostname` | string | Host reported name |
+| `os` | string | `linux`, `darwin`, or `windows` |
+| `arch` | string | CPU architecture |
+| `version` | string | Agent version string |
+
+## Response `201 Created`
+
+```json
+{
+  "agent_id": "540966814a7f4c429fc5696866c3fdcc",
+  "agent_secret": "<hex-secret>",
+  "tenant_id": "org_2abc..."
+}
+```
+
+Store credentials locally — `agent_secret` signs all future JWTs.
+
+## Errors
+
+| Status | Cause |
+|--------|-------|
+| 401 | Invalid or expired install token |
+| 422 | Missing required fields |
+
+## Related
+
+- [Heartbeat](/api-reference/agent/heartbeat)
+- [Install Beacon Host](/guides/install-beacon-host)

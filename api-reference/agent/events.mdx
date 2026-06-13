@@ -1,0 +1,50 @@
+---
+title: Post events
+api: POST /api/agent/events
+description: Ingest module scan results from Beacon Host.
+---
+
+Upload structured results from CIS, vuln, inventory, logs, or FIM modules.
+
+## Authentication
+
+`Authorization: Bearer <agent-jwt>`
+
+## Request body
+
+```json
+{
+  "module": "cis",
+  "data": {
+    "scan_id": "...",
+    "policy": "CIS Level 1",
+    "score_pct": 82,
+    "checks": []
+  }
+}
+```
+
+| `module` value | Handler | Creates |
+|----------------|---------|---------|
+| `cis` | `process_cis_event` | CISSnapshot, CISCheck rows |
+| `vuln` | `process_vuln_event` | VulnScan, Vulnerability rows |
+| `inventory` | `process_inventory_event` | InventorySnapshot |
+| `logs` | `process_logs_event` | SystemLogEvent, Alert (via rules) |
+| `fim` | `process_fim_event` | FIMEvent rows |
+
+## Response
+
+`204 No Content` on success.
+
+## Logs module notes
+
+- Only **auth, privilege, persistence, tamper** categories stored
+- Max **50** events per batch
+- Triggers **rules engine** evaluation
+- Applies dedup and retention policies
+
+[Security events →](/concepts/security-events)
+
+## Related
+
+- [Beacon Host modules](/agents/beacon-host/modules)

@@ -1,0 +1,55 @@
+---
+title: Heartbeat
+api: POST /api/agent/heartbeat
+description: Agent liveness check and pending command delivery.
+---
+
+Called every **60 seconds** by default. Updates agent `last_seen` and returns remote commands.
+
+## Authentication
+
+`Authorization: Bearer <agent-jwt>`
+
+## Request body
+
+```json
+{
+  "version": "0.1.0",
+  "timestamp": "2026-06-13T12:00:00Z"
+}
+```
+
+## Response `200 OK`
+
+```json
+{
+  "enabled": true,
+  "commands": [
+    {
+      "id": "cmd-uuid",
+      "command_type": "run_module",
+      "module": "cis",
+      "payload": null
+    }
+  ]
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `enabled` | `false` when agent status is not active — scheduler pauses |
+| `commands` | Pending commands to execute before next heartbeat |
+
+## Command completion
+
+After executing a command:
+
+```
+POST /api/agent/commands/{command_id}/complete
+{ "status": "completed", "error": null }
+```
+
+## Related
+
+- [Agents concept](/concepts/agents)
+- [Manage fleet](/guides/manage-fleet)

@@ -1,0 +1,51 @@
+---
+title: Compliance
+api: GET /api/compliance
+description: NIS2 compliance scores and evidence export endpoints.
+---
+
+## Compliance overview
+
+```
+GET /api/compliance
+```
+
+```json
+{
+  "framework_id": "nis2",
+  "overall_score": 72,
+  "overall_status": "amber",
+  "controls": [
+    {
+      "article_control": "21_2_f_cis",
+      "label": "Security configuration (CIS)",
+      "score_pct": 82,
+      "status": "green",
+      "summary": "Average CIS benchmark score across agents"
+    }
+  ]
+}
+```
+
+## JSON evidence pack
+
+```
+GET /api/compliance/evidence
+```
+
+Full audit snapshot — agents, vulns, alerts, emails, CIS history, compliance object.
+
+[Evidence structure →](/concepts/evidence-and-audits)
+
+## PDF report
+
+```
+GET /api/compliance/evidence/report
+```
+
+Returns `application/pdf` with `Content-Disposition: attachment`.
+
+## Related
+
+- [Control formulas](/compliance/controls)
+- [Export guide](/guides/export-compliance-report)

@@ -1,0 +1,58 @@
+---
+title: Incidents
+description: Incident register endpoints for NIS2 incident tracking.
+---
+
+## List incidents
+
+```
+GET /api/incidents
+```
+
+Query: `status` — `open`, `resolved`, `investigating`, or `all`
+
+```json
+[
+  {
+    "id": "...",
+    "title": "Suspected brute force on prod-api",
+    "severity": "high",
+    "status": "investigating",
+    "description": "...",
+    "created_at": "2026-06-13T09:00:00Z",
+    "updated_at": "2026-06-13T11:00:00Z"
+  }
+]
+```
+
+## Create incident
+
+```
+POST /api/incidents
+```
+
+```json
+{
+  "title": "Unauthorized sudo activity",
+  "severity": "high",
+  "description": "PRIV-001 alert confirmed on web-02"
+}
+```
+
+## Update incident
+
+```
+PATCH /api/incidents/{id}
+```
+
+```json
+{
+  "status": "resolved",
+  "description": "Password rotated, source IP blocked"
+}
+```
+
+## Related
+
+- [Incidents and remediation](/guides/incidents-and-remediation)
+- [Alerts](/api-reference/dashboard/alerts)

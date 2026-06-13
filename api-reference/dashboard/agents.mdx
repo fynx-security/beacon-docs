@@ -1,0 +1,55 @@
+---
+title: Agents
+api: GET /api/agents
+description: List and manage registered Beacon Host agents.
+---
+
+Dashboard endpoints for fleet visibility. Require Clerk JWT or dev tenant header.
+
+## List agents
+
+```
+GET /api/agents
+```
+
+Returns agent summaries: id, hostname, os, status, last_seen, online flag, CIS brief, CVE counts.
+
+## Agent detail
+
+```
+GET /api/agents/{id}
+GET /api/agents/{id}/summary
+GET /api/agents/{id}/security-posture
+GET /api/agents/{id}/cis-scans
+GET /api/agents/{id}/events-timeline
+```
+
+## Commands
+
+```
+POST /api/agents/{id}/commands
+{
+  "command": "run_module",
+  "module": "cis"
+}
+```
+
+```
+POST /api/agents/{id}/start
+```
+
+Re-enable a stopped agent.
+
+## Install tokens
+
+```
+POST /api/install-tokens
+{}
+```
+
+Returns one-time registration token (24h TTL).
+
+## Related
+
+- [Manage fleet](/guides/manage-fleet)
+- [Agent groups guide](/guides/agent-groups)
