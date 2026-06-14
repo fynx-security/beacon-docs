@@ -11,8 +11,8 @@ description: Generate PDF and JSON audit packs from the dashboard or API.
 
 Files download with dated filenames:
 
-- `nis2-compliance-report-2026-06-13.pdf`
-- `nis2-evidence-2026-06-13.json`
+- `beacon-compliance-summary-2026-06-13.pdf` — executive summary with charts (drill down in the dashboard)
+- `beacon-evidence-2026-06-13.json` — full raw audit pack
 
 ## From the API
 
@@ -44,8 +44,9 @@ curl -H "X-Tenant-ID: org_dev" \
 Set on Beacon API:
 
 ```bash
-REPORT_BRAND_NAME=Your Company
-REPORT_BRAND_TAGLINE=Security Operations
+REPORT_BRAND_NAME=Beacon
+REPORT_BRAND_TAGLINE=Compliance evidence
+DASHBOARD_BASE_URL=https://app.yourdomain.com
 ```
 
 ## Best practices

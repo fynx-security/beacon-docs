@@ -43,23 +43,24 @@ Limits applied at export time:
 - Up to **100** open alerts
 - Latest **20** CIS snapshots
 
-## PDF compliance report
+## PDF compliance summary
 
-The PDF includes:
+The PDF is an **executive overview** — not a full evidence dump. Use the dashboard for drill-down.
 
-- Branded header with overall score and status
+It includes:
+
+- Branded **Beacon** header with overall score and status
 - Executive summary metrics (agents, CVEs, alerts, emails)
-- Article 21 control table
-- Fleet overview
-- Top open vulnerabilities and alerts
-- Recent CIS scans and breach monitor status
+- **Charts**: Article 21 control scores, fleet health, vulnerability and alert severity mix, CIS posture, credential exposure
+- Link to the dashboard for detailed investigation
 - Legal disclaimer (automated evidence, not certification)
 
 Customize branding via API environment:
 
 ```bash
-REPORT_BRAND_NAME=Acme Corp
-REPORT_BRAND_TAGLINE=Security Operations
+REPORT_BRAND_NAME=Beacon
+REPORT_BRAND_TAGLINE=Compliance evidence
+DASHBOARD_BASE_URL=https://app.yourdomain.com
 ```
 
 ## When to export
