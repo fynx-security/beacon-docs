@@ -17,7 +17,7 @@ description: What each dashboard page shows and when to use it.
 
 Fleet table — all Beacon Host agents for tenant. Columns: hostname, OS, status, CIS score, CVE count, last seen.
 
-**Agent detail** (`/agents/[id]`): posture cards, CIS brief, vulnerability panel, FIM events, events timeline chart, remote actions.
+**Agent detail** (`/agents/[id]`): posture cards, CIS brief, vulnerability panel, FIM events, events timeline chart, **live terminal**, remote actions.
 
 ## Agent Groups (`/agents/groups`)
 
@@ -35,9 +35,7 @@ Severity overview charts and sortable CVE table. Patch or resolve CVEs inline.
 
 Security rules reference, open alerts by agent, alert remediation. Renamed from generic "alerts" — focuses on **security event detections**.
 
-## Agent Logs (`/logs`)
-
-Live stdout/stderr stream from agents (terminal-style view). Separate from security event storage.
+Agent process output is streamed on each **agent detail** page (`/agents/[id]` → Live terminal), not a separate sidebar page.
 
 ## Compliance (`/compliance`)
 
