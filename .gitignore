@@ -2,3 +2,6 @@ node_modules/
 .mintlify/
 .DS_Store
 publish.sh
+_site/
+export.zip
+package-lock.json

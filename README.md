@@ -16,20 +16,25 @@ Requires Node.js 18+.
 
 ## Publish live
 
-### Option A — GitHub Pages (this repo)
+### GitHub Pages (this repo)
 
-1. In GitHub: **Settings → Pages → Build and deployment → Source: GitHub Actions**
-2. Push to `main` — the workflow exports Mintlify static HTML and deploys automatically
-3. Site URL: **https://fynx-security.github.io/beacon-docs/**
+Docs build from MDX via `scripts/build-static-docs.mjs` (no Mintlify Enterprise export required).
 
-> **Note:** GitHub Pages on **private** repos requires a GitHub Team (or higher) plan. On Free plans, make the repo public or use Option B.
+1. Repo must be **public** (GitHub Free cannot serve Pages from private repos)
+2. Push to `main` — Actions deploys automatically
+3. Site: **https://fynx-security.github.io/beacon-docs/**
 
-### Option B — Mintlify hosting
+Local static preview:
 
-1. Push this repo to GitHub (`fynx-security/beacon-docs`)
-2. Sign up at [mintlify.com](https://mintlify.com)
-3. Connect the GitHub repo — Mintlify builds and hosts the docs site
-4. Add custom domain e.g. `docs.yourbeacon.com`
+```bash
+npm install marked@15
+DOCS_BASE_PATH= node scripts/build-static-docs.mjs
+npx serve _site
+```
+
+### Mintlify hosting (optional)
+
+For the full Mintlify UI, connect the repo at [mintlify.com](https://mintlify.com) and use their hosted domain.
 
 ## Structure
 

@@ -27,18 +27,13 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Install Mintlify CLI
-        run: npm install -g mintlify
+      - name: Install build deps
+        run: npm install marked@15
 
-      - name: Export static site
-        run: |
-          mkdir -p _site
-          mintlify export --output _site/export.zip
-          unzip -q _site/export.zip -d _site
-          rm _site/export.zip
-
-      - name: Prepare for project Pages URL
-        run: node scripts/prepare-github-pages.mjs _site "${{ github.event.repository.name }}"
+      - name: Build static site
+        env:
+          DOCS_BASE_PATH: /${{ github.event.repository.name }}
+        run: node scripts/build-static-docs.mjs
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
